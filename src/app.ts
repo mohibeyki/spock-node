@@ -1,0 +1,52 @@
+import express from "express";
+import compression from "compression"; // compresses requests
+import bodyParser from "body-parser";
+import mongoose from "mongoose";
+import bluebird from "bluebird";
+import cors from "cors";
+import jwt from "express-jwt";
+import morgan from "morgan";
+
+import { MONGODB_URI, JWT_SECRET } from "./util/secrets";
+import { apiV1Router } from "./routes/api-v1-router";
+
+const app = express();
+
+const mongoUrl = MONGODB_URI;
+mongoose.Promise = bluebird;
+
+mongoose
+  .connect(mongoUrl, {
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    /** ready to use. The `mongoose.connect()` promise resolves to undefined. */
+  })
+  .catch((err) => {
+    console.log(
+      `MongoDB connection error. Please make sure MongoDB is running. ${err}`
+    );
+  });
+
+app.set("port", process.env.PORT);
+app.use(compression());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors());
+app.use(morgan("short"));
+app.use(
+  jwt({ secret: JWT_SECRET }).unless({
+    path: [
+      { url: "/api/v1/", methods: ["POST"] },
+      {
+        url: "/api/v1/signin",
+        methods: ["POST"],
+      },
+    ],
+  })
+);
+app.use("/api/v1", apiV1Router);
+
+export default app;
