@@ -4,6 +4,7 @@ import { UserModel, UserClass } from "../models/User";
 import { Role } from "../util/role";
 import { hashPassword, checkPassword } from "../util/auth";
 import { JWT_SECRET } from "../util/secrets";
+import { Http400Error, Http409Error } from "../errors/http";
 
 const filterUser = (user: UserClass) => {
   const { role, username, email } = user;
@@ -25,7 +26,9 @@ export const createUser = async (
   ]);
 
   if (found[0] || found[1]) {
-    throw new Error("A user with the same username or email exists");
+    throw new Http409Error({
+      msg: "A user with the same username or email exists",
+    });
   }
   password = await hashPassword(password);
 
@@ -50,5 +53,5 @@ export const signin = async (username: string, password: string) => {
       token: jwt.sign(filterUser(user), JWT_SECRET),
     };
   }
-  throw new Error("invalid username or password");
+  throw new Http400Error({ msg: "invalid username or password" });
 };

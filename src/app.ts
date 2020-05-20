@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Response, NextFunction } from "express";
 import compression from "compression"; // compresses requests
 import bodyParser from "body-parser";
 import mongoose from "mongoose";
@@ -9,6 +9,7 @@ import morgan from "morgan";
 
 import { MONGODB_URI, JWT_SECRET } from "./util/secrets";
 import { apiV1Router } from "./routes/api-v1-router";
+import { HttpError } from "./errors/http";
 
 const app = express();
 
@@ -48,5 +49,10 @@ app.use(
   })
 );
 app.use("/api/v1", apiV1Router);
+app.use((err, req, res, next) => {
+  if (err instanceof HttpError) {
+    err.respond(res);
+  }
+});
 
 export default app;

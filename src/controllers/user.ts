@@ -1,16 +1,31 @@
 import { Request, Response, NextFunction } from "express";
 import { validationResult } from "express-validator";
 import { getAllUsers, createUser, signin } from "../services/user";
+import { Role } from "../util/role";
+import { UserClass } from "../models/User";
+import {
+  Http400Error,
+  Http403Error,
+  Http500Error,
+  HttpError,
+} from "../errors/http";
 
 export const getSlash = async (
-  _: Request,
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    res.status(200).json(await getAllUsers());
+    if ((req.user as UserClass).role === Role.admin) {
+      return res.status(200).json(await getAllUsers());
+    } else {
+      next(new Http403Error());
+    }
   } catch (err) {
-    next(err);
+    if (err instanceof HttpError) {
+      return next(err);
+    }
+    return next(new Http500Error({ msg: err }));
   }
 };
 
@@ -21,15 +36,20 @@ export const postSlash = async (
 ) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return next(errors);
+    next(new Http400Error({ msg: errors }));
   }
 
   try {
-    res.json(
-      await createUser(req.body.username, req.body.email, req.body.password)
-    );
+    return res
+      .status(200)
+      .json(
+        await createUser(req.body.username, req.body.email, req.body.password)
+      );
   } catch (err) {
-    next(err);
+    if (err instanceof HttpError) {
+      return next(err);
+    }
+    return next(new Http500Error({ msg: err }));
   }
 };
 
@@ -40,11 +60,16 @@ export const postSignin = async (
 ) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return next(errors);
+    next(new Http400Error({ msg: errors }));
   }
   try {
-    res.json(await signin(req.body.username, req.body.password));
+    return res
+      .status(200)
+      .json(await signin(req.body.username, req.body.password));
   } catch (err) {
-    next(err);
+    if (err instanceof HttpError) {
+      return next(err);
+    }
+    return next(new Http500Error({ msg: err }));
   }
 };
