@@ -25,7 +25,7 @@ export const getSlash = async (
     if (err instanceof HttpError) {
       return next(err);
     }
-    return next(new Http500Error({ msg: err }));
+    return next(new Http500Error(err));
   }
 };
 
@@ -36,7 +36,7 @@ export const postSlash = async (
 ) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    next(new Http400Error({ msg: errors }));
+    next(new Http400Error(errors));
   }
 
   try {
@@ -49,7 +49,7 @@ export const postSlash = async (
     if (err instanceof HttpError) {
       return next(err);
     }
-    return next(new Http500Error({ msg: err }));
+    return next(new Http500Error(err));
   }
 };
 
@@ -60,7 +60,7 @@ export const postSignin = async (
 ) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    next(new Http400Error({ msg: errors }));
+    next(new Http400Error(errors));
   }
   try {
     return res
@@ -70,6 +70,6 @@ export const postSignin = async (
     if (err instanceof HttpError) {
       return next(err);
     }
-    return next(new Http500Error({ msg: err }));
+    return next(new Http500Error(err));
   }
 };

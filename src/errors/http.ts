@@ -1,74 +1,65 @@
 import { Response } from "express";
 
 export class HttpError extends Error {
-  code: number;
-  body: { msg: unknown };
+  body: { status: number; message: unknown };
 
   respond(res: Response) {
-    res.status(this.code).json(this.body);
+    res.status(this.body.status).json(this.body);
   }
 }
 
 export class Http400Error extends HttpError {
-  constructor(body: { msg: unknown } = { msg: "bad request" }) {
+  constructor(message: unknown = "bad request") {
     super();
-    this.code = 400;
-    this.body = body;
+    this.body = { status: 400, message };
   }
 }
 
 export class Http401Error extends HttpError {
-  constructor(body: { msg: unknown } = { msg: "unauthorized" }) {
+  constructor(message: unknown = "unauthorized") {
     super();
-    this.code = 401;
-    this.body = body;
+    this.body = { status: 401, message };
   }
 }
 
 export class Http403Error extends HttpError {
-  constructor(body: { msg: unknown } = { msg: "access denied" }) {
+  constructor(message: unknown = "access denied") {
     super();
-    this.code = 403;
-    this.body = body;
+    this.body = { status: 403, message };
   }
 }
 
 export class Http404Error extends HttpError {
-  constructor(body: { msg: unknown } = { msg: "not found" }) {
+  constructor(message: unknown = "not found") {
     super();
-    this.code = 404;
-    this.body = body;
+    this.body = { status: 404, message };
   }
 }
 
 export class Http409Error extends HttpError {
-  constructor(body: { msg: unknown } = { msg: "conflict" }) {
+  constructor(message: unknown = "conflict") {
     super();
-    this.code = 409;
-    this.body = body;
+    this.body = { status: 409, message };
   }
 }
 
 export class Http500Error extends HttpError {
-  constructor(body: { msg: unknown } = { msg: "internal server error" }) {
+  constructor(message: unknown = "internal server error") {
     super();
-    this.code = 500;
-    this.body = body;
+    this.body = { status: 500, message };
   }
 }
 
 export class Http501Error extends HttpError {
-  constructor(body: { msg: unknown } = { msg: "not implemented" }) {
+  constructor(message: unknown = "not implemented") {
     super();
-    this.code = 501;
-    this.body = body;
+    this.body = { status: 501, message };
   }
 }
 
 export class Http503Error extends HttpError {
-  constructor(body: { msg: unknown } = { msg: "service unavailable" }) {
+  constructor(message: unknown = "service unavailable") {
     super();
-    this.code = 503;
-    this.body = body;
+    this.body = { status: 503, message };
   }
 }

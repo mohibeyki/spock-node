@@ -1,4 +1,4 @@
-import express, { Response, NextFunction } from "express";
+import express, { Response, NextFunction, ErrorRequestHandler } from "express";
 import compression from "compression"; // compresses requests
 import bodyParser from "body-parser";
 import mongoose from "mongoose";
@@ -31,6 +31,18 @@ mongoose
     );
   });
 
+const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
+  if (err instanceof HttpError) {
+    return err.respond(res);
+  }
+  if (err.status && err.message) {
+    return res
+      .status(err.status)
+      .json({ status: err.status, message: err.message });
+  }
+  res.status(500).json(err);
+};
+
 app.set("port", process.env.PORT);
 app.use(compression());
 app.use(bodyParser.json());
@@ -40,19 +52,15 @@ app.use(morgan("short"));
 app.use(
   jwt({ secret: JWT_SECRET }).unless({
     path: [
-      { url: "/api/v1/", methods: ["POST"] },
+      { url: "/api/v1/users", methods: ["POST"] },
       {
-        url: "/api/v1/signin",
+        url: "/api/v1/users/signin",
         methods: ["POST"],
       },
     ],
   })
 );
 app.use("/api/v1", apiV1Router);
-app.use((err, req, res, next) => {
-  if (err instanceof HttpError) {
-    err.respond(res);
-  }
-});
+app.use(errorHandler);
 
 export default app;

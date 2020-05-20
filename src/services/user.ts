@@ -26,9 +26,7 @@ export const createUser = async (
   ]);
 
   if (found[0] || found[1]) {
-    throw new Http409Error({
-      msg: "A user with the same username or email exists",
-    });
+    throw new Http409Error("A user with the same username or email exists");
   }
   password = await hashPassword(password);
 
@@ -53,5 +51,5 @@ export const signin = async (username: string, password: string) => {
       token: jwt.sign(filterUser(user), JWT_SECRET),
     };
   }
-  throw new Http400Error({ msg: "invalid username or password" });
+  throw new Http400Error("invalid username or password");
 };
