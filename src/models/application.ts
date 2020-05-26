@@ -19,6 +19,9 @@ export class ApplicationClass {
 
   @prop({ required: true, ref: UserClass })
   user: Ref<UserClass>;
+
+  @prop({ default: false })
+  archived: boolean;
 }
 
 export const ApplicationModel = getModelForClass(ApplicationClass, {

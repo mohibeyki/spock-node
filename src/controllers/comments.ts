@@ -13,7 +13,12 @@ export const getComments = async (
   try {
     res
       .status(200)
-      .json(await CommentsService.getCommentsForApplication(req.params["id"]));
+      .json(
+        await CommentsService.getCommentsForApplication(
+          req.params["id"],
+          (req.user as DocumentType<UserClass>)._id
+        )
+      );
   } catch (err) {
     if (err instanceof HttpError) {
       return next(err);
@@ -34,7 +39,29 @@ export const createComment = async (
         await CommentsService.createComment(
           req.body,
           req.params["id"],
-          req.user as DocumentType<UserClass>
+          (req.user as DocumentType<UserClass>)._id
+        )
+      );
+  } catch (err) {
+    if (err instanceof HttpError) {
+      return next(err);
+    }
+    return next(new Http500Error(err));
+  }
+};
+
+export const deleteComments = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    res
+      .status(200)
+      .json(
+        await CommentsService.deleteComment(
+          req.params["id"],
+          (req.user as DocumentType<UserClass>)._id
         )
       );
   } catch (err) {

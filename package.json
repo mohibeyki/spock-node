@@ -12,7 +12,7 @@
     "start": "yarn run serve",
     "serve": "ts-node src/server.ts",
     "watch": "nodemon src/server.ts",
-    "test": "jest --forceExit --coverage --verbose",
+    "test": "jest --forceExit --coverage --verbose --detectOpenHandles",
     "watch-test": "yarn run test -- --watchAll",
     "lint": "tsc --noEmit && eslint \"**/*.{js,ts}\" --quiet --fix",
     "debug": "nodemon --inspect src/server.ts"

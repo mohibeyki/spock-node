@@ -43,7 +43,7 @@ export const createUser = async (
       username,
       email,
       password,
-      role: Role.user,
+      role: username === "admin" ? Role.admin : Role.user,
     })
   );
 };

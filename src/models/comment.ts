@@ -7,6 +7,9 @@ export class CommentClass {
 
   @prop({ required: true })
   text: string;
+
+  @prop({ default: false })
+  archived: boolean;
 }
 
 export const CommentModel = getModelForClass(CommentClass, {

@@ -52,6 +52,7 @@ app.use(morgan("short"));
 app.use(
   jwt({ secret: JWT_SECRET }).unless({
     path: [
+      { url: "/api/v1", methods: ["GET"] },
       { url: "/api/v1/users", methods: ["POST"] },
       {
         url: "/api/v1/users/signin",

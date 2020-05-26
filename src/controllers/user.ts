@@ -1,21 +1,14 @@
 import { Request, Response, NextFunction } from "express";
 import { validationResult } from "express-validator";
 import * as UserService from "../services/user";
-import { Http400Error, Http500Error, HttpError } from "../errors/http";
+import { Http400Error } from "../errors/http";
 
 export const getUsers = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  try {
-    return res.status(200).json(await UserService.getAllUsers());
-  } catch (err) {
-    if (err instanceof HttpError) {
-      return next(err);
-    }
-    return next(new Http500Error(err));
-  }
+  return res.status(200).json(await UserService.getAllUsers());
 };
 
 export const createUser = async (
@@ -27,7 +20,6 @@ export const createUser = async (
   if (!errors.isEmpty()) {
     next(new Http400Error(errors));
   }
-
   try {
     return res
       .status(200)
@@ -39,10 +31,7 @@ export const createUser = async (
         )
       );
   } catch (err) {
-    if (err instanceof HttpError) {
-      return next(err);
-    }
-    return next(new Http500Error(err));
+    return next(err);
   }
 };
 
@@ -60,9 +49,6 @@ export const postSignin = async (
       .status(200)
       .json(await UserService.signin(req.body.username, req.body.password));
   } catch (err) {
-    if (err instanceof HttpError) {
-      return next(err);
-    }
-    return next(new Http500Error(err));
+    return next(err);
   }
 };
