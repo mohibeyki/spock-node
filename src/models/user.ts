@@ -8,11 +8,13 @@ export class UserClass {
   @prop({ required: true })
   password: string;
 
-  @prop({ required: true, unique: true })
+  @prop({ required: true, unique: true, index: true })
   email: string;
 
   @prop({ required: true, default: Role.admin })
   role: Role;
 }
 
-export const UserModel = getModelForClass(UserClass);
+export const UserModel = getModelForClass(UserClass, {
+  schemaOptions: { timestamps: true },
+});

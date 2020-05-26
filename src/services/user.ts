@@ -1,18 +1,26 @@
 import jwt from "jsonwebtoken";
+import { DocumentType } from "@typegoose/typegoose";
 
-import { UserModel, UserClass } from "../models/User";
+import { UserModel, UserClass } from "../models/user";
 import { Role } from "../util/role";
 import { hashPassword, checkPassword } from "../util/auth";
 import { JWT_SECRET } from "../util/secrets";
 import { Http400Error, Http409Error } from "../errors/http";
 
-const filterUser = (user: UserClass) => {
-  const { role, username, email } = user;
-  return { role, username, email };
+const filterUser = (user: DocumentType<UserClass>) => {
+  const { _id, role, username, email } = user;
+  return { _id, role, username, email };
 };
 
 export const getAllUsers = async () => {
   return (await UserModel.find()).map((user) => filterUser(user));
+};
+
+const getUserAndToken = (user: DocumentType<UserClass>) => {
+  return {
+    user: filterUser(user),
+    token: jwt.sign(filterUser(user), JWT_SECRET),
+  };
 };
 
 export const createUser = async (
@@ -30,7 +38,7 @@ export const createUser = async (
   }
   password = await hashPassword(password);
 
-  return filterUser(
+  return getUserAndToken(
     await UserModel.create({
       username,
       email,
@@ -46,10 +54,7 @@ export const signin = async (username: string, password: string) => {
   });
 
   if (user && (await checkPassword(password, user.password))) {
-    return {
-      user: filterUser(user),
-      token: jwt.sign(filterUser(user), JWT_SECRET),
-    };
+    return getUserAndToken(user);
   }
   throw new Http400Error("invalid username or password");
 };
