@@ -3,11 +3,7 @@ import { validationResult } from "express-validator";
 import * as UserService from "../services/user";
 import { Http400Error } from "../errors/http";
 
-export const getUsers = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const getUsers = async (req: Request, res: Response) => {
   return res.status(200).json(await UserService.getAllUsers());
 };
 
@@ -16,11 +12,11 @@ export const createUser = async (
   res: Response,
   next: NextFunction
 ) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    next(new Http400Error(errors));
-  }
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      throw new Http400Error(errors.array());
+    }
     return res
       .status(200)
       .json(
@@ -40,11 +36,11 @@ export const postSignin = async (
   res: Response,
   next: NextFunction
 ) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    next(new Http400Error(errors));
-  }
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      throw new Http400Error(errors.array());
+    }
     return res
       .status(200)
       .json(await UserService.signin(req.body.username, req.body.password));

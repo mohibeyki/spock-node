@@ -5,7 +5,7 @@ import { UserModel, UserClass } from "../models/user";
 import { Role } from "../util/role";
 import { hashPassword, checkPassword } from "../util/auth";
 import { JWT_SECRET } from "../util/secrets";
-import { Http400Error, Http409Error } from "../errors/http";
+import { Http404Error, Http409Error } from "../errors/http";
 
 const filterUser = (user: DocumentType<UserClass>) => {
   const { _id, role, username, email } = user;
@@ -56,5 +56,5 @@ export const signin = async (username: string, password: string) => {
   if (user && (await checkPassword(password, user.password))) {
     return getUserAndToken(user);
   }
-  throw new Http400Error("invalid username or password");
+  throw new Http404Error("invalid username or password");
 };

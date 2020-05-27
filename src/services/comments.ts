@@ -1,13 +1,16 @@
 import { CommentModel, CommentClass } from "../models/comment";
-import { ApplicationModel } from "../models/application";
+import { ApplicationModel, ApplicationClass } from "../models/application";
 import { Http403Error, Http404Error } from "../errors/http";
-import { mongoose } from "@typegoose/typegoose";
+import { mongoose, DocumentType } from "@typegoose/typegoose";
 
 export const getCommentsForApplication = async (
   applicationId: string,
   userId: mongoose.Types.ObjectId
 ) => {
   const application = await ApplicationModel.findOne({ _id: applicationId });
+  if (!application) {
+    throw new Http404Error();
+  }
   if (application.user != userId) {
     throw new Http403Error();
   }
@@ -24,11 +27,11 @@ export const createComment = async (
 ) => {
   const application = await ApplicationModel.findOne({
     _id: applicationId,
-  }).populate("user");
+  });
   if (!application) {
     throw new Http404Error();
   }
-  if (application.user !== userId) {
+  if (application.user != userId) {
     throw new Http403Error();
   }
   return await CommentModel.create({ ...body, application });
@@ -36,7 +39,7 @@ export const createComment = async (
 
 export const deleteComment = async (
   commentId: string,
-  userId: mongoose.Types.ObjectId
+  applicationId: mongoose.Types.ObjectId
 ) => {
   const comment = await CommentModel.findOne({ _id: commentId }).populate(
     "application"
@@ -44,7 +47,10 @@ export const deleteComment = async (
   if (!comment) {
     throw new Http404Error();
   }
-  if (comment.application != userId) {
+  if (
+    (comment.application as DocumentType<ApplicationClass>).user !=
+    applicationId
+  ) {
     throw new Http403Error();
   }
   comment.archived = true;

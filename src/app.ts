@@ -1,4 +1,4 @@
-import express, { Response, NextFunction, ErrorRequestHandler } from "express";
+import express, { ErrorRequestHandler } from "express";
 import compression from "compression"; // compresses requests
 import bodyParser from "body-parser";
 import mongoose from "mongoose";
@@ -22,14 +22,7 @@ mongoose
     useCreateIndex: true,
     useUnifiedTopology: true,
   })
-  .then(() => {
-    /** ready to use. The `mongoose.connect()` promise resolves to undefined. */
-  })
-  .catch((err) => {
-    console.log(
-      `MongoDB connection error. Please make sure MongoDB is running. ${err}`
-    );
-  });
+  .then();
 
 const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   if (err instanceof HttpError) {
@@ -40,7 +33,7 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
       .status(err.status)
       .json({ status: err.status, message: err.message });
   }
-  res.status(500).json(err);
+  res.status(500).json({ message: "Internal Server Error" });
 };
 
 app.set("port", process.env.PORT);
@@ -53,6 +46,7 @@ app.use(
   jwt({ secret: JWT_SECRET }).unless({
     path: [
       { url: "/api/v1", methods: ["GET"] },
+      { url: "/api/v1/ise", methods: ["GET"] },
       { url: "/api/v1/users", methods: ["POST"] },
       {
         url: "/api/v1/users/signin",

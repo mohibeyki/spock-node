@@ -1,9 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import { DocumentType } from "@typegoose/typegoose";
 
-import { Http500Error, HttpError } from "../errors/http";
+import { Http400Error } from "../errors/http";
 import * as CommentsService from "../services/comments";
 import { UserClass } from "../models/user";
+import { validationResult } from "express-validator";
 
 export const getComments = async (
   req: Request,
@@ -20,10 +21,7 @@ export const getComments = async (
         )
       );
   } catch (err) {
-    if (err instanceof HttpError) {
-      return next(err);
-    }
-    return next(new Http500Error(err));
+    return next(err);
   }
 };
 
@@ -33,6 +31,10 @@ export const createComment = async (
   next: NextFunction
 ) => {
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      throw new Http400Error(errors.array());
+    }
     res
       .status(200)
       .json(
@@ -43,14 +45,11 @@ export const createComment = async (
         )
       );
   } catch (err) {
-    if (err instanceof HttpError) {
-      return next(err);
-    }
-    return next(new Http500Error(err));
+    return next(err);
   }
 };
 
-export const deleteComments = async (
+export const deleteComment = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -65,9 +64,6 @@ export const deleteComments = async (
         )
       );
   } catch (err) {
-    if (err instanceof HttpError) {
-      return next(err);
-    }
-    return next(new Http500Error(err));
+    return next(err);
   }
 };

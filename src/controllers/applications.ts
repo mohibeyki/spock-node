@@ -7,34 +7,18 @@ import { UserClass } from "../models/user";
 import { ApplicationClass } from "../models/application";
 import { validationResult } from "express-validator";
 
-export const getApplications = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    res
-      .status(200)
-      .json(
-        await ApplicationService.getApplicationsForUser(
-          (req.user as DocumentType<UserClass>)._id
-        )
-      );
-  } catch (err) {
-    return next(err);
-  }
+export const getApplications = async (req: Request, res: Response) => {
+  res
+    .status(200)
+    .json(
+      await ApplicationService.getApplicationsForUser(
+        (req.user as DocumentType<UserClass>)._id
+      )
+    );
 };
 
-export const getAllApplications = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    res.status(200).json(await ApplicationService.getAllApplications());
-  } catch (err) {
-    return next(err);
-  }
+export const getAllApplications = async (req: Request, res: Response) => {
+  res.status(200).json(await ApplicationService.getAllApplications());
 };
 
 export const createApplication = async (
@@ -42,11 +26,11 @@ export const createApplication = async (
   res: Response,
   next: NextFunction
 ) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    next(new Http400Error(errors));
-  }
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      throw new Http400Error(errors.array());
+    }
     res
       .status(200)
       .json(
@@ -68,7 +52,12 @@ export const deleteApplication = async (
   try {
     res
       .status(200)
-      .json(await ApplicationService.deleteApplication(req.params["id"]));
+      .json(
+        await ApplicationService.deleteApplication(
+          req.params["id"],
+          (req.user as DocumentType<UserClass>)._id
+        )
+      );
   } catch (err) {
     return next(err);
   }

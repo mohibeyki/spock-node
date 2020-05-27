@@ -55,6 +55,9 @@ describe("POST /api/v1/users", () => {
       })
       .expect(400);
   });
+  it("should return 401 Unauthorized", async () => {
+    return await request(app).get("/api/v1/users").expect(401);
+  });
   it("should return 409", async () => {
     await request(app)
       .post("/api/v1/users")
@@ -69,22 +72,33 @@ describe("POST /api/v1/users", () => {
 
 describe("POST /api/v1/users/signin", () => {
   it("should return 200 OK", async () => {
-    let res = await request(app)
+    const res = await request(app)
       .post("/api/v1/users/signin")
       .send({ username: "user", password: "userpassword" })
       .expect(200);
     expect(res.body.token).toBeTruthy();
-    res = await request(app)
+  });
+
+  it("should return 200 OK", async () => {
+    const res = await request(app)
       .post("/api/v1/users/signin")
       .send({ username: "admin", password: "adminpassword" })
       .expect(200);
     expect(res.body.token).toBeTruthy();
   });
+
   it("should return 400 Bad Request", async () => {
     await request(app)
       .post("/api/v1/users/signin")
       .send({ username: "u", password: "userpassword" })
       .expect(400);
+  });
+
+  it("should return 404 Not Found", async () => {
+    await request(app)
+      .post("/api/v1/users/signin")
+      .send({ username: "username", password: "password" })
+      .expect(404);
   });
 });
 

@@ -9,16 +9,9 @@ export class HttpError extends Error {
 }
 
 export class Http400Error extends HttpError {
-  constructor(message: unknown = "bad request") {
+  constructor(message: unknown) {
     super();
     this.body = { status: 400, message };
-  }
-}
-
-export class Http401Error extends HttpError {
-  constructor(message: unknown = "unauthorized") {
-    super();
-    this.body = { status: 401, message };
   }
 }
 
@@ -37,29 +30,8 @@ export class Http404Error extends HttpError {
 }
 
 export class Http409Error extends HttpError {
-  constructor(message: unknown = "conflict") {
+  constructor(message: unknown) {
     super();
     this.body = { status: 409, message };
-  }
-}
-
-export class Http500Error extends HttpError {
-  constructor(message: unknown = "internal server error") {
-    super();
-    this.body = { status: 500, message };
-  }
-}
-
-export class Http501Error extends HttpError {
-  constructor(message: unknown = "not implemented") {
-    super();
-    this.body = { status: 501, message };
-  }
-}
-
-export class Http503Error extends HttpError {
-  constructor(message: unknown = "service unavailable") {
-    super();
-    this.body = { status: 503, message };
   }
 }

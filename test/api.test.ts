@@ -25,6 +25,12 @@ describe("GET /api/v1", () => {
   });
 });
 
+describe("GET /api/v1/ise", () => {
+  it("should return 500 Internal Server Error", async () => {
+    return await request(app).get("/api/v1/ise").expect(500);
+  });
+});
+
 afterAll(async () => {
   await removeAllCollections();
   await mongoose.disconnect();
