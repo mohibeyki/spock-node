@@ -48,9 +48,9 @@ export const createUser = async (
   );
 };
 
-export const signin = async (username: string, password: string) => {
+export const signin = async (email: string, password: string) => {
   const user = await UserModel.findOne({
-    username,
+    email,
   });
 
   if (user && (await checkPassword(password, user.password))) {

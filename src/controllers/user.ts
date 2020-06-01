@@ -43,7 +43,7 @@ export const postSignin = async (
     }
     return res
       .status(200)
-      .json(await UserService.signin(req.body.username, req.body.password));
+      .json(await UserService.signin(req.body.email, req.body.password));
   } catch (err) {
     return next(err);
   }

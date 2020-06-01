@@ -74,7 +74,7 @@ describe("POST /api/v1/users/signin", () => {
   it("should return 200 OK", async () => {
     const res = await request(app)
       .post("/api/v1/users/signin")
-      .send({ username: "user", password: "userpassword" })
+      .send({ email: "user@test.com", password: "userpassword" })
       .expect(200);
     expect(res.body.token).toBeTruthy();
   });
@@ -82,7 +82,7 @@ describe("POST /api/v1/users/signin", () => {
   it("should return 200 OK", async () => {
     const res = await request(app)
       .post("/api/v1/users/signin")
-      .send({ username: "admin", password: "adminpassword" })
+      .send({ email: "admin@test.com", password: "adminpassword" })
       .expect(200);
     expect(res.body.token).toBeTruthy();
   });
@@ -90,14 +90,14 @@ describe("POST /api/v1/users/signin", () => {
   it("should return 400 Bad Request", async () => {
     await request(app)
       .post("/api/v1/users/signin")
-      .send({ username: "u", password: "userpassword" })
+      .send({ email: "u", password: "userpassword" })
       .expect(400);
   });
 
   it("should return 404 Not Found", async () => {
     await request(app)
       .post("/api/v1/users/signin")
-      .send({ username: "username", password: "password" })
+      .send({ email: "username@test.com", password: "password" })
       .expect(404);
   });
 });

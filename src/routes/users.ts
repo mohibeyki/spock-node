@@ -17,6 +17,6 @@ router.post(
   ],
   createUser
 );
-router.post("/signin", [body("username").isLength({ min: 4 })], postSignin);
+router.post("/signin", [body("email").isLength({ min: 4 })], postSignin);
 
 export default router;
