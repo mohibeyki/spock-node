@@ -1,9 +1,8 @@
 import express from "express";
-
-import { getUsers, createUser, postSignin } from "../controllers/user";
-import { Role } from "../util/role";
-import { authorize } from "../util/auth";
 import { body } from "express-validator";
+import { createUser, getUsers, postSignin } from "../controllers/user";
+import { authorize } from "../util/auth";
+import { Role } from "../util/role";
 
 const router = express.Router();
 
@@ -17,6 +16,13 @@ router.post(
   ],
   createUser
 );
-router.post("/signin", [body("email").isLength({ min: 4 })], postSignin);
+router.post(
+  "/signin",
+  [
+    body("email").isEmail().normalizeEmail(),
+    body("email").isLength({ min: 4 }),
+  ],
+  postSignin
+);
 
 export default router;

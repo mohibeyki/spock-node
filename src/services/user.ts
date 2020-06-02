@@ -19,7 +19,7 @@ export const getAllUsers = async () => {
 const getUserAndToken = (user: DocumentType<UserClass>) => {
   return {
     user: filterUser(user),
-    token: jwt.sign(filterUser(user), JWT_SECRET),
+    token: jwt.sign(filterUser(user), JWT_SECRET, { expiresIn: "7d" }),
   };
 };
 
