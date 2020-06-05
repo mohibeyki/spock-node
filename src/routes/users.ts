@@ -10,17 +10,28 @@ router.get("/", authorize([Role.admin]), getUsers);
 router.post(
   "/",
   [
-    body("email").isEmail().normalizeEmail(),
-    body("password").isLength({ min: 8 }),
-    body("username").isLength({ min: 4 }),
+    body("email")
+      .isEmail()
+      .withMessage("invalid email address")
+      .normalizeEmail(),
+    body("password")
+      .isLength({ min: 8 })
+      .withMessage("needs to be at least 8 characters"),
+    body("username")
+      .isLength({ min: 4 })
+      .withMessage("needs to be at least 4 characters"),
   ],
   createUser
 );
 router.post(
   "/signin",
   [
-    body("email").isEmail().normalizeEmail(),
-    body("email").isLength({ min: 4 }),
+    body("email")
+      .isEmail()
+      .withMessage("invalid email address")
+      .isLength({ min: 8 })
+      .withMessage("needs to be at least 8 characters")
+      .normalizeEmail(),
   ],
   postSignin
 );
