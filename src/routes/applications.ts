@@ -8,7 +8,7 @@ import {
 } from "../controllers/applications";
 import { Role } from "../util/role";
 import { authorize } from "../util/auth";
-import { body } from "express-validator";
+import { check } from "express-validator";
 
 const router = express.Router();
 
@@ -18,10 +18,11 @@ router.get("/all", authorize([Role.admin]), getAllApplications);
 router.post(
   "/",
   [
-    body("company").isLength({ min: 1 }),
-    body("position").isLength({ min: 1 }),
-    body("submissionLink").isLength({ min: 1 }),
-    body("status").isLength({ min: 1 }),
+    check("company").isLength({ min: 3, max: 64 }),
+    check("position").isLength({ min: 3, max: 64 }),
+    check("submissionLink").isLength({ min: 3, max: 256 }),
+    check("status").isLength({ min: 3, max: 64 }),
+    check("submissionDate").isISO8601(),
   ],
   createApplication
 );
