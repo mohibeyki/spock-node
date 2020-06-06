@@ -1,15 +1,14 @@
-import express, { ErrorRequestHandler } from "express";
-import compression from "compression"; // compresses requests
-import bodyParser from "body-parser";
-import mongoose from "mongoose";
 import bluebird from "bluebird";
+import bodyParser from "body-parser";
+import compression from "compression"; // compresses requests
 import cors from "cors";
+import express, { ErrorRequestHandler } from "express";
 import jwt from "express-jwt";
+import mongoose from "mongoose";
 import morgan from "morgan";
-
-import { MONGODB_URI, JWT_SECRET } from "./util/secrets";
-import { apiV1Router } from "./routes/api-v1-router";
 import { HttpError } from "./errors/http";
+import { apiV1Router } from "./routes/api-v1-router";
+import { JWT_SECRET, MONGODB_URI } from "./util/secrets";
 
 const app = express();
 
@@ -49,7 +48,7 @@ app.use(
       { url: "/api/v1/ise", methods: ["GET"] },
       { url: "/api/v1/users", methods: ["POST"] },
       {
-        url: "/api/v1/users/signin",
+        url: "/api/v1/users/login",
         methods: ["POST"],
       },
     ],
