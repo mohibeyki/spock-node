@@ -1,6 +1,6 @@
-import { ApplicationModel, ApplicationClass } from "../models/application";
-import { Http404Error, Http403Error } from "../errors/http";
 import { mongoose } from "@typegoose/typegoose";
+import { Http403Error, Http404Error } from "../errors/http";
+import { ApplicationClass, ApplicationModel } from "../models/application";
 
 export const getAllApplications = async () => {
   return await ApplicationModel.find().populate("user");
@@ -15,6 +15,13 @@ export const createApplication = async (
   user: mongoose.Types.ObjectId
 ) => {
   return await ApplicationModel.create({ ...body, user });
+};
+
+export const updateApplication = async (
+  body: any,
+  user: mongoose.Types.ObjectId
+) => {
+  return await ApplicationModel.updateOne({_id: body._id, user:user}, { ...body, user });
 };
 
 export const deleteApplication = async (
