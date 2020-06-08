@@ -1,21 +1,20 @@
-import { DocumentType } from "@typegoose/typegoose";
-import { NextFunction, Request, Response } from "express";
-import { validationResult } from "express-validator";
-import { Http400Error } from "../errors/http";
-import { ApplicationClass } from "../models/application";
-import { UserClass } from "../models/user";
-import * as ApplicationService from "../services/application";
-
+import { DocumentType } from '@typegoose/typegoose'
+import { NextFunction, Request, Response } from 'express'
+import { validationResult } from 'express-validator'
+import { Http400Error } from '../errors/http'
+import { ApplicationClass } from '../models/application'
+import { UserClass } from '../models/user'
+import * as ApplicationService from '../services/application'
 
 export const getApplications = async (req: Request, res: Response) => {
   res
     .status(200)
-    .json(await ApplicationService.getApplicationsForUser((req.user as DocumentType<UserClass>)._id));
-};
+    .json(await ApplicationService.getApplicationsForUser((req.user as DocumentType<UserClass>)._id))
+}
 
 export const getAllApplications = async (req: Request, res: Response) => {
-  res.status(200).json(await ApplicationService.getAllApplications());
-};
+  res.status(200).json(await ApplicationService.getAllApplications())
+}
 
 export const createApplication = async (
   req: Request,
@@ -23,9 +22,9 @@ export const createApplication = async (
   next: NextFunction
 ) => {
   try {
-    const errors = validationResult(req);
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
-      throw new Http400Error(errors.array());
+      throw new Http400Error(errors.array())
     }
     res
       .status(200)
@@ -34,11 +33,11 @@ export const createApplication = async (
           req.body as ApplicationClass,
           (req.user as DocumentType<UserClass>)._id
         )
-      );
+      )
   } catch (err) {
-    return next(err);
+    return next(err)
   }
-};
+}
 
 export const updateApplication = async (
   req: Request,
@@ -46,9 +45,9 @@ export const updateApplication = async (
   next: NextFunction
 ) => {
   try {
-    const errors = validationResult(req);
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
-      throw new Http400Error(errors.array());
+      throw new Http400Error(errors.array())
     }
     res
       .status(200)
@@ -57,11 +56,11 @@ export const updateApplication = async (
           req.body as ApplicationClass,
           (req.user as DocumentType<UserClass>)._id
         )
-      );
+      )
   } catch (err) {
-    return next(err);
+    return next(err)
   }
-};
+}
 
 export const deleteApplication = async (
   req: Request,
@@ -73,11 +72,11 @@ export const deleteApplication = async (
       .status(200)
       .json(
         await ApplicationService.deleteApplication(
-          req.params["id"],
+          req.params.id,
           (req.user as DocumentType<UserClass>)._id
         )
-      );
+      )
   } catch (err) {
-    return next(err);
+    return next(err)
   }
-};
+}
