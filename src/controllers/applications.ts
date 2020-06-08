@@ -53,6 +53,7 @@ export const updateApplication = async (
       .status(200)
       .json(
         await ApplicationService.updateApplication(
+          req.params.id,
           req.body as ApplicationClass,
           (req.user as DocumentType<UserClass>)._id
         )

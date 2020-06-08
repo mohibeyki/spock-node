@@ -1,5 +1,5 @@
-import { prop, getModelForClass, Ref } from "@typegoose/typegoose";
-import { ApplicationClass } from "./application";
+import { prop, getModelForClass, Ref } from '@typegoose/typegoose'
+import { ApplicationClass } from './application'
 
 export class CommentClass {
   @prop({ required: true, ref: ApplicationClass })
@@ -13,5 +13,5 @@ export class CommentClass {
 }
 
 export const CommentModel = getModelForClass(CommentClass, {
-  schemaOptions: { timestamps: true },
-});
+  schemaOptions: { timestamps: true }
+})

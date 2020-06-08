@@ -1,5 +1,5 @@
-import { Role } from "../util/role";
-import { prop, getModelForClass } from "@typegoose/typegoose";
+import { Role } from '../util/role'
+import { prop, getModelForClass } from '@typegoose/typegoose'
 
 export class UserClass {
   @prop({ required: true, unique: true })
@@ -16,5 +16,5 @@ export class UserClass {
 }
 
 export const UserModel = getModelForClass(UserClass, {
-  schemaOptions: { timestamps: true },
-});
+  schemaOptions: { timestamps: true }
+})

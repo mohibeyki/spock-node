@@ -1,39 +1,39 @@
-import express from "express";
-import { check } from "express-validator";
-import { createUser, getUsers, postLogin } from "../controllers/user";
-import { authorize } from "../util/auth";
-import { Role } from "../util/role";
+import express from 'express'
+import { check } from 'express-validator'
+import { createUser, getUsers, postLogin } from '../controllers/user'
+import { authorize } from '../util/auth'
+import { Role } from '../util/role'
 
-const router = express.Router();
+const router = express.Router()
 
-router.get("/", authorize([Role.admin]), getUsers);
+router.get('/', authorize([Role.admin]), getUsers)
 router.post(
-  "/",
+  '/',
   [
-    check("email")
+    check('email')
       .isEmail()
-      .withMessage("invalid email address")
+      .withMessage('invalid email address')
       .normalizeEmail(),
-    check("password")
+    check('password')
       .isLength({ min: 8 })
-      .withMessage("needs to be at least 8 characters"),
-    check("username")
+      .withMessage('needs to be at least 8 characters'),
+    check('username')
       .isLength({ min: 4 })
-      .withMessage("needs to be at least 4 characters"),
+      .withMessage('needs to be at least 4 characters')
   ],
   createUser
-);
+)
 router.post(
-  "/login",
+  '/login',
   [
-    check("email")
+    check('email')
       .isEmail()
-      .withMessage("invalid email address")
+      .withMessage('invalid email address')
       .isLength({ min: 8 })
-      .withMessage("needs to be at least 8 characters")
-      .normalizeEmail(),
+      .withMessage('needs to be at least 8 characters')
+      .normalizeEmail()
   ],
   postLogin
-);
+)
 
-export default router;
+export default router

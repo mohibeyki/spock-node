@@ -1,16 +1,16 @@
-import express from "express";
+import express from 'express'
 import {
   getComments,
   createComment,
-  deleteComment,
-} from "../controllers/comments";
+  deleteComment
+} from '../controllers/comments'
 
-import { body } from "express-validator";
+import { body } from 'express-validator'
 
-const router = express.Router();
+const router = express.Router()
 
-router.get("/:id", getComments);
-router.post("/:id", [body("text").isLength({ min: 1 })], createComment);
-router.delete("/:id", deleteComment);
+router.get('/:id', getComments)
+router.post('/:id', [body('text').isLength({ min: 1 })], createComment)
+router.delete('/:id', deleteComment)
 
-export default router;
+export default router
