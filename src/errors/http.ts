@@ -9,7 +9,7 @@ export class HttpError extends Error {
 }
 
 export class Http400Error extends HttpError {
-  constructor (message: unknown) {
+  constructor (message: unknown = 'bad request') {
     super()
     this.body = { status: 400, message }
   }

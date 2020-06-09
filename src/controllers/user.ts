@@ -1,6 +1,8 @@
+import { DocumentType } from '@typegoose/typegoose'
 import { NextFunction, Request, Response } from 'express'
 import { validationResult } from 'express-validator'
 import { Http400Error } from '../errors/http'
+import { UserClass } from '../models/user'
 import * as UserService from '../services/user'
 
 export const getUsers = async (
@@ -27,6 +29,29 @@ export const createUser = async (
           req.body.username,
           req.body.email,
           req.body.password
+        )
+      )
+  } catch (err) {
+    next(err)
+  }
+}
+
+export const updateUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<Response> => {
+  try {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+      throw new Http400Error(errors.array())
+    }
+    return res
+      .status(200)
+      .json(
+        await UserService.updateUser(
+          req.body.password,
+          (req.user as DocumentType<UserClass>).email
         )
       )
   } catch (err) {

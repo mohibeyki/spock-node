@@ -1,11 +1,10 @@
-import jwt from 'jsonwebtoken'
 import { DocumentType } from '@typegoose/typegoose'
-
-import { UserModel, UserClass } from '../models/user'
-import { Role } from '../util/role'
-import { hashPassword, checkPassword } from '../util/auth'
-import { JWT_SECRET } from '../util/secrets'
+import jwt from 'jsonwebtoken'
 import { Http404Error, Http409Error } from '../errors/http'
+import { UserClass, UserModel } from '../models/user'
+import { checkPassword, hashPassword } from '../util/auth'
+import { Role } from '../util/role'
+import { JWT_SECRET } from '../util/secrets'
 
 const filterUser = (user: DocumentType<UserClass>) => {
   const { _id, role, username, email } = user
@@ -46,6 +45,16 @@ export const createUser = async (
       role: username === 'admin' ? Role.admin : Role.user
     })
   )
+}
+
+export const updateUser = async (
+  password: string,
+  email: string
+) => {
+  const user = await UserModel.findOne({ email })
+  user.password = await hashPassword(password)
+  await user.save()
+  return { msg: 'ok' }
 }
 
 export const signin = async (email: string, password: string) => {

@@ -1,23 +1,30 @@
-import { mongoose, DocumentType } from '@typegoose/typegoose'
-import { Http404Error } from '../errors/http'
+import { DocumentType, mongoose } from '@typegoose/typegoose'
+import { Http400Error, Http404Error } from '../errors/http'
 import { ApplicationClass, ApplicationModel } from '../models/application'
 
-const updateFields = (application: DocumentType<ApplicationClass>, obj: any) => {
-  if (obj.company) {
+const updateFields = (application: DocumentType<ApplicationClass>, obj: any): boolean => {
+  let updated = false
+  if (obj.company && application.company !== obj.company) {
     application.company = obj.company
+    updated = true
   }
-  if (obj.position) {
+  if (obj.position && application.position !== obj.position) {
     application.position = obj.position
+    updated = true
   }
-  if (obj.submissionDate) {
+  if (obj.submissionDate && application.submissionDate !== obj.submissionDate) {
     application.submissionDate = obj.submissionDate
+    updated = true
   }
-  if (obj.status) {
+  if (obj.status && application.status !== obj.status) {
     application.status = obj.status
+    updated = true
   }
-  if (obj.submissionLink) {
+  if (obj.submissionLink && application.submissionLink !== obj.submissionLink) {
     application.submissionLink = obj.submissionLink
+    updated = true
   }
+  return updated
 }
 
 export const getAllApplications = async () => {
@@ -44,7 +51,10 @@ export const updateApplication = async (
   if (!application) {
     throw new Http404Error()
   }
-  updateFields(application, body)
+  const result = updateFields(application, body)
+  if (!result) {
+    throw new Http400Error()
+  }
   return await application.save()
 }
 

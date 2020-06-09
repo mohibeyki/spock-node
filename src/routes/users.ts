@@ -1,6 +1,6 @@
 import express from 'express'
 import { check } from 'express-validator'
-import { createUser, getUsers, postLogin } from '../controllers/user'
+import { createUser, getUsers, postLogin, updateUser } from '../controllers/user'
 import { authorize } from '../util/auth'
 import { Role } from '../util/role'
 
@@ -22,6 +22,15 @@ router.post(
       .withMessage('needs to be at least 4 characters')
   ],
   createUser
+)
+router.put(
+  '/',
+  [
+    check('password')
+      .isLength({ min: 8 })
+      .withMessage('needs to be at least 8 characters')
+  ],
+  updateUser
 )
 router.post(
   '/login',
