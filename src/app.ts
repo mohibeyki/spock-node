@@ -42,7 +42,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cors())
 app.use(morgan('short'))
 app.use(
-  jwt({ secret: JWT_SECRET }).unless({
+  jwt({ secret: JWT_SECRET, algorithms: ['HS256'] }).unless({
     path: [
       { url: '/api/v1', methods: ['GET'] },
       { url: '/api/v1/ise', methods: ['GET'] },
